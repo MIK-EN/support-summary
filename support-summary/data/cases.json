@@ -1,0 +1,82 @@
+[
+  {
+    "case_id": "С-17",
+    "type": "onboarding",
+    "crm_status": "pending",
+    "deadline": "2026-11-24T09:00",
+    "confirmations": {
+      "manager": null,
+      "documents": null,
+      "acceptance": null
+    },
+    "crm_updated_at": "2026-11-20T12:00",
+    "chat_messages": [
+      {
+        "msg_id": "c17-1",
+        "author_role": "employee",
+        "sent_at": "2026-11-23T08:40",
+        "text": "Вчера отправил фотографии документов руководителю в личку"
+      }
+    ]
+  },
+  {
+    "case_id": "С-24",
+    "type": "offboarding",
+    "crm_status": "pending",
+    "deadline": "2026-11-23T18:00",
+    "confirmations": {
+      "manager": null,
+      "documents": null,
+      "acceptance": null
+    },
+    "crm_updated_at": "2026-11-21T15:00",
+    "chat_messages": [
+      {
+        "msg_id": "c24-1",
+        "author_role": "employee",
+        "sent_at": "2026-11-23T09:10",
+        "text": "С руководителем всё обсудили, он в курсе"
+      }
+    ]
+  },
+  {
+    "case_id": "П-08",
+    "type": "card_delivery",
+    "crm_status": "in_transit",
+    "deadline": "2026-11-23T10:00",
+    "confirmations": {
+      "manager": null,
+      "documents": null,
+      "acceptance": null
+    },
+    "crm_updated_at": "2026-11-23T08:00",
+    "chat_messages": [
+      {
+        "msg_id": "p08-1",
+        "author_role": "courier",
+        "sent_at": "2026-11-23T09:55",
+        "text": "Задерживаюсь, раньше 13:00 не приеду"
+      }
+    ]
+  },
+  {
+    "case_id": "П-09",
+    "type": "card_delivery",
+    "crm_status": "accepted",
+    "deadline": "2026-11-23T12:00",
+    "confirmations": {
+      "manager": null,
+      "documents": null,
+      "acceptance": "2026-11-23T09:20"
+    },
+    "crm_updated_at": "2026-11-23T09:20",
+    "chat_messages": [
+      {
+        "msg_id": "p09-1",
+        "author_role": "recipient",
+        "sent_at": "2026-11-23T09:25",
+        "text": "Карты получили, количество проверили"
+      }
+    ]
+  }
+]

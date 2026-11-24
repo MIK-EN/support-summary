@@ -1,0 +1,59 @@
+{
+  "c17-1": {
+    "msg_id": "c17-1",
+    "extraction": {
+      "summary": "Сотрудник говорит, что вчера отправил фото документов руководителю в личные сообщения",
+      "quote": "Вчера отправил фотографии документов руководителю в личку",
+      "times": [],
+      "labels": [
+        "claims_done"
+      ],
+      "uncertain": false
+    },
+    "parse_failed": false
+  },
+  "c24-1": {
+    "msg_id": "c24-1",
+    "extraction": {
+      "summary": "Сотрудник говорит, что всё обсудил с руководителем",
+      "quote": "С руководителем всё обсудили, он в курсе",
+      "times": [],
+      "labels": [
+        "claims_done"
+      ],
+      "uncertain": false
+    },
+    "parse_failed": false
+  },
+  "p08-1": {
+    "msg_id": "p08-1",
+    "extraction": {
+      "summary": "Курьер задерживается, приедет не раньше 13:00",
+      "quote": "Задерживаюсь, раньше 13:00 не приеду",
+      "times": [
+        {
+          "time": "13:00",
+          "role": "new_eta"
+        }
+      ],
+      "labels": [
+        "reports_problem"
+      ],
+      "uncertain": false
+    },
+    "parse_failed": false
+  },
+  "p09-1": {
+    "msg_id": "p09-1",
+    "extraction": {
+      "summary": "Получатель сообщает, что карты получены и количество проверено",
+      "quote": "Карты получили, количество проверили",
+      "times": [],
+      "labels": [
+        "claims_done"
+      ],
+      "uncertain": false
+    },
+    "parse_failed": false
+  }
+}
