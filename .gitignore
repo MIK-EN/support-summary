@@ -1,0 +1,16 @@
+.venv/
+__pycache__/
+*.pyc
+.pytest_cache/
+.coverage
+coverage.xml
+htmlcov/
+.ruff_cache/
+.opencode/
+.DS_Store
+test_task.pdf
+support-summary/out/
+support-summary/logs/
+support-summary/state/
+.env
+*.egg-info/
