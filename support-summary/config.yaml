@@ -1,0 +1,9 @@
+interval_minutes: 60
+llm_model: deepseek/deepseek-v4.1-flash-1017
+paths:
+  cases: data/cases.json
+  llm_cache: data/llm_cache.json
+  rules: rules.yaml
+  state: state/state.json
+  out: out
+  logs: logs
