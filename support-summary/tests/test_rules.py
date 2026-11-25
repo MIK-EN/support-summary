@@ -68,6 +68,9 @@ BASE_SITUATIONS = (
     ),
     pytest.param("offboarding", "pending", TODAY, None, "R4", "red", id="manager-missing"),
     pytest.param("offboarding", "pending", TODAY, "manager", "R0", "gray", id="manager-confirmed"),
+    pytest.param(
+        "offboarding", "pending", NOW - timedelta(days=1), None, "R4", "red", id="manager-late"
+    ),
     pytest.param("onboarding", "pending", TOMORROW, None, "R5", "yellow", id="documents-tomorrow"),
     pytest.param(
         "onboarding",
@@ -79,6 +82,9 @@ BASE_SITUATIONS = (
         id="documents-confirmed",
     ),
     pytest.param("onboarding", "pending", TODAY, None, "R6", "red", id="documents-today"),
+    pytest.param(
+        "onboarding", "pending", NOW - timedelta(days=1), None, "R6", "red", id="documents-late"
+    ),
     pytest.param("onboarding", "pending", None, None, "R0", "gray", id="onboarding-no-deadline"),
     pytest.param("card_delivery", "pending", TODAY, None, "R0", "gray", id="delivery-pending"),
     pytest.param("card_delivery", "in_transit", None, None, "R0", "gray", id="transit-no-deadline"),
@@ -138,6 +144,19 @@ def make_parsed(
             uncertain=uncertain,
         ),
     )
+
+
+@pytest.mark.parametrize(
+    ("deadline", "overdue"),
+    [(NOW - timedelta(hours=1), False), (NOW - timedelta(days=1), True)],
+    ids=["earlier-today", "yesterday"],
+)
+def test_hr_case_is_overdue_only_from_the_next_day(
+    rules: RulesConfig, deadline: datetime, overdue: bool
+) -> None:
+    result = evaluate(make_case("offboarding", deadline=deadline), {}, NOW, rules)
+
+    assert (result.priority, result.overdue) == ("red", overdue)
 
 
 def test_fixture_results(rules: RulesConfig) -> None:

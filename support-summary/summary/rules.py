@@ -77,12 +77,15 @@ def _base_rule(case: Case, now: datetime, soon_hours: float) -> str:
         days_remaining = (deadline.date() - now.date()).days
         if (
             case.type == "offboarding"
-            and days_remaining == 0
+            and days_remaining <= 0
             and case.confirmations.manager is None
         ):
             return "R4"
         if case.type == "onboarding" and case.confirmations.documents is None:
-            return {1: "R5", 0: "R6"}.get(days_remaining, "R0")
+            if days_remaining <= 0:
+                return "R6"
+            if days_remaining == 1:
+                return "R5"
     return "R0"
 
 
@@ -157,6 +160,16 @@ def _chat_rules(
     return fired, discrepancies + claims + requests + uncertain
 
 
+def _overdue(case: Case, now: datetime) -> bool:
+    deadline = case.deadline
+    if deadline is None or case.crm_status not in ("pending", "in_transit"):
+        return False
+    if case.type == "card_delivery":
+        return now >= deadline
+    # У оформления и увольнения в CRM только дата: срок нарушен со следующего дня.
+    return deadline.date() < now.date()
+
+
 def evaluate(
     case: Case, parsed: dict[str, ParsedMessage], now: datetime, rules: RulesConfig
 ) -> CaseResult:
@@ -169,15 +182,12 @@ def evaluate(
     if "C1" in fired and SEVERITY[priority] < SEVERITY["yellow"]:
         priority = "yellow"
 
-    deadline = case.deadline
     return CaseResult(
         case=case,
         priority=priority,
         base_rule=base_rule,
         fired=[base_rule, *fired],
-        overdue=deadline is not None
-        and now >= deadline
-        and case.crm_status in ("pending", "in_transit"),
+        overdue=_overdue(case, now),
         action=base.action,
         notes=notes,
         messages=messages,

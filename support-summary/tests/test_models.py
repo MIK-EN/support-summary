@@ -56,10 +56,10 @@ def test_load_cases_fixture_in_file_order(fixture_cases):
         ("card_delivery", "accepted"),
     ]
     assert [case.deadline for case in fixture_cases] == [
-        datetime(2026, 11, 24, 9, 0),
-        datetime(2026, 11, 23, 18, 0),
+        datetime(2026, 11, 24),
+        datetime(2026, 11, 23),
         datetime(2026, 11, 23, 10, 0),
-        datetime(2026, 11, 23, 12, 0),
+        None,
     ]
     assert [case.crm_updated_at for case in fixture_cases] == [
         datetime(2026, 11, 20, 12, 0),

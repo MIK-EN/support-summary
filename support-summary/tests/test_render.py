@@ -92,7 +92,22 @@ def test_crm_line_onboarding_with_confirmed_documents() -> None:
     confirmations = Confirmations(documents=datetime(2026, 11, 23, 8, 15))
     case = make_case("onboarding", TOMORROW_MORNING, confirmations=confirmations)
 
-    assert crm_line(case, NOW) == "первый выход завтра 09:00, документы получены сегодня 08:15."
+    assert crm_line(case, NOW) == "первый выход завтра, документы получены сегодня 08:15."
+
+
+def test_crm_line_accepted_delivery_without_deadline_shows_only_crm_facts() -> None:
+    confirmations = Confirmations(acceptance=datetime(2026, 11, 23, 9, 20))
+    case = make_case(status="accepted", confirmations=confirmations)
+
+    assert crm_line(case, NOW) == "статус «Принято». Приёмка подтверждена сегодня 09:20."
+
+
+def test_render_item_title_for_hr_case_shows_day_without_time() -> None:
+    result = make_result(make_case("offboarding", TODAY_EVENING))
+
+    assert render_item(1, result, NOW).split("\n", 1)[0] == (
+        "⚪ **1. П-01 · Увольнение сотрудника · срок сегодня**"
+    )
 
 
 def test_crm_line_onboarding_without_deadline() -> None:
@@ -104,7 +119,7 @@ def test_crm_line_offboarding_with_manager_confirmation() -> None:
     case = make_case("offboarding", TODAY_EVENING, confirmations=confirmations)
 
     assert crm_line(case, NOW) == (
-        "последний рабочий день сегодня 18:00, подтверждение руководителя получено сегодня 09:00."
+        "последний рабочий день сегодня, подтверждение руководителя получено сегодня 09:00."
     )
 
 

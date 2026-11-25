@@ -1,5 +1,5 @@
 import json
-from datetime import date, datetime
+from datetime import date, datetime, time
 from pathlib import Path
 from typing import Literal
 
@@ -101,8 +101,8 @@ def diff(prev: State, results: list[CaseResult]) -> list[Change]:
     return changes
 
 
-def is_full_run(prev: State, now: datetime) -> bool:
-    return prev.last_full_date != now.date()
+def is_full_run(prev: State, now: datetime, full_at: time) -> bool:
+    return prev.last_full_date != now.date() and now.time() >= full_at
 
 
 def render_changes(

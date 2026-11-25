@@ -153,6 +153,32 @@ def test_next_day_run_prints_a_full_summary(
     assert capsys.readouterr().out.startswith("# Сводка support · 24.11.2026 09:00")
 
 
+def test_night_run_waits_for_the_morning_summary(
+    config_path: Path, capsys: pytest.CaptureFixture[str]
+) -> None:
+    assert main(run_args(config_path)) == 0
+    capsys.readouterr()
+
+    assert main(run_args(config_path, "2026-11-24T00:30")) == 0
+    assert capsys.readouterr().out == ""
+
+    assert main(run_args(config_path, "2026-11-24T09:00")) == 0
+    assert capsys.readouterr().out.startswith("# Сводка support · 24.11.2026 09:00")
+
+
+def test_refresh_does_not_hide_changes_from_the_next_run(
+    config_path: Path, capsys: pytest.CaptureFixture[str]
+) -> None:
+    assert main(run_args(config_path)) == 0
+    add_courier_message(config_path.parent, "Теперь буду к 14:30")
+    assert main(["summary", "--now", "2026-11-23T10:05", "--config", str(config_path)]) == 0
+    capsys.readouterr()
+
+    assert main(run_args(config_path, "2026-11-23T11:00")) == 0
+
+    assert "новое сообщение (курьер)" in capsys.readouterr().out
+
+
 def test_refresh_prints_a_full_summary_without_calling_the_llm(
     config_path: Path, capsys: pytest.CaptureFixture[str], monkeypatch: pytest.MonkeyPatch
 ) -> None:

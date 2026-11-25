@@ -1,4 +1,4 @@
-from datetime import date, datetime, timedelta
+from datetime import date, datetime, time, timedelta
 from pathlib import Path
 
 import pytest
@@ -117,7 +117,14 @@ def test_save_state_round_trip(tmp_path: Path) -> None:
     [(None, True), (NOW.date(), False), (NOW.date() - timedelta(days=1), True)],
 )
 def test_is_full_run(last_full_date: date | None, expected: bool) -> None:
-    assert is_full_run(State(last_full_date=last_full_date), NOW) is expected
+    assert is_full_run(State(last_full_date=last_full_date), NOW, time(9, 0)) is expected
+
+
+def test_is_full_run_waits_for_morning_summary_time() -> None:
+    night = NOW.replace(hour=0, minute=30)
+
+    assert is_full_run(State(), night, time(9, 0)) is False
+    assert is_full_run(State(), night.replace(hour=9, minute=0), time(9, 0)) is True
 
 
 def test_snapshot_from_empty_state(results: list[CaseResult]) -> None:

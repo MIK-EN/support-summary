@@ -39,19 +39,20 @@ def crm_line(case: Case, now: datetime) -> str:
     confirmations = case.confirmations
 
     if case.type == "card_delivery":
-        delivery = (
-            f"доставка {day_word(deadline, now)} до {deadline:%H:%M}"
-            if deadline is not None
-            else "срок доставки не указан"
-        )
-        line = f"{delivery}, статус «{STATUS_RU[case.crm_status]}»."
+        status = f"статус «{STATUS_RU[case.crm_status]}»."
+        if deadline is not None:
+            line = f"доставка {day_word(deadline, now)} до {deadline:%H:%M}, {status}"
+        elif case.crm_status == "accepted":
+            line = status
+        else:
+            line = f"срок доставки не указан, {status}"
         if confirmations.acceptance is not None:
             line += f" Приёмка подтверждена {fmt_when(confirmations.acceptance, now)}."
         return line
 
     if case.type == "onboarding":
         first_day = (
-            f"первый выход {fmt_when(deadline, now)}"
+            f"первый выход {day_word(deadline, now)}"
             if deadline is not None
             else "дата первого выхода не указана"
         )
@@ -63,7 +64,7 @@ def crm_line(case: Case, now: datetime) -> str:
         return f"{first_day}, документы {documents}."
 
     last_day = (
-        f"последний рабочий день {fmt_when(deadline, now)}"
+        f"последний рабочий день {day_word(deadline, now)}"
         if deadline is not None
         else "последний рабочий день не указан"
     )
@@ -96,7 +97,8 @@ def render_item(n: int, r: CaseResult, now: datetime) -> str:
     elif case.crm_status == "accepted":
         title += " · принято по CRM"
     elif case.deadline is not None:
-        title += f" · срок {fmt_when(case.deadline, now)}"
+        when = fmt_when if case.type == "card_delivery" else day_word
+        title += f" · срок {when(case.deadline, now)}"
 
     lines = [
         f"{EMOJI[r.priority]} **{title}**",

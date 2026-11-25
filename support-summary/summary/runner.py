@@ -1,6 +1,6 @@
 import json
 import os
-from datetime import datetime
+from datetime import datetime, time
 from pathlib import Path
 from typing import Literal
 
@@ -27,6 +27,7 @@ class Paths(BaseModel):
 class Config(BaseModel):
     interval_minutes: int
     llm_model: str
+    full_summary_at: time = time(9, 0)
     paths: Paths
 
 
@@ -119,11 +120,15 @@ def run_once(
     last_full_date = prev.last_full_date
 
     mode: Literal["full", "changes", "silent"]
-    if refresh or is_full_run(prev, now):
+    if refresh or is_full_run(prev, now, cfg.full_summary_at):
         mode = "full"
         markdown = render_full(results, now)
         out_path = paths.out / f"summary_{now:%Y%m%d_%H%M}.md"
         last_full_date = now.date()
+    elif prev.last_full_date != now.date():
+        # Утренней сводки ещё не было: изменения до неё не шлём, их покажет сама сводка.
+        mode = "silent"
+        markdown = ""
     elif changes := diff(prev, results):
         mode = "changes"
         markdown = render_changes(changes, results, new_snaps, now)
@@ -135,7 +140,10 @@ def run_once(
     if out_path is not None:
         out_path.parent.mkdir(parents=True, exist_ok=True)
         out_path.write_text(markdown, encoding="utf-8")
-    save_state(paths.state, State(last_run=now, last_full_date=last_full_date, cases=new_snaps))
+    if not refresh:
+        # «Актуализировать» только показывает сводку: иначе следующий прогон
+        # не увидит изменений, случившихся до неё.
+        save_state(paths.state, State(last_run=now, last_full_date=last_full_date, cases=new_snaps))
 
     output = RunOutput(mode=mode, markdown=markdown, out_path=out_path)
     model = parse_client.model if parse_client is not None else "cache"
