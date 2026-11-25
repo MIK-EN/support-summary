@@ -14,3 +14,7 @@ support-summary/logs/
 support-summary/state/
 .env
 *.egg-info/
+
+# Рабочие материалы, не для репозитория
+Спека*.md
+testbench/
